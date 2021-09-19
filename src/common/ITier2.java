@@ -3,8 +3,11 @@
  */
 
 
-package dk.via.jpe.vsb.common;
+package common;
 
+
+import model.Account;
+import model.User;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -13,8 +16,13 @@ import java.rmi.RemoteException;
 public interface ITier2
 	extends Remote
 {
-	public boolean withdraw( int accountNumber, double amount ) throws RemoteException;
+	boolean withdraw(int accountNumber, double amount) throws RemoteException;
+	boolean deposit(int accountNumber, double amount) throws RemoteException;
+	String getBalance(int accountNumber) throws RemoteException;
+	boolean createUserAccount(User user) throws RemoteException;
+	boolean login(User user) throws RemoteException;
+	int getMainAccountNr(String username) throws RemoteException;
 	
 	
-	public static final String T2_SERVICE_NAME = "rmi://localhost/T2";
+	String T2_SERVICE_NAME = "rmi://localhost:2020/T2";
 }

@@ -3,10 +3,12 @@
  */
 
 
-package dk.via.jpe.vsb.common;
+package common;
 
 
-import dk.via.jpe.vsb.model.Account;
+import model.Account;
+import model.User;
+
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
@@ -14,10 +16,17 @@ import java.rmi.RemoteException;
 public interface ITier3
 	extends Remote
 {
-	public Account getAccount( int accountNumber ) throws RemoteException;
+	Account getAccount(int accountNumber) throws RemoteException;
 	
-	public void updateAccount( Account account ) throws RemoteException;
+	boolean updateAccount(Account account) throws RemoteException;
+
+	boolean createUserAccount(User user) throws RemoteException;
+
+	boolean isTaken(String username) throws RemoteException;
+
+	boolean login(User user) throws RemoteException;
+
+	int getAccountNumber(String username) throws RemoteException;
 	
-	
-	public static final String T3_SERVICE_NAME = "rmi://localhost/T3";
+	String T3_SERVICE_NAME = "rmi://localhost:1099/T3";
 }
