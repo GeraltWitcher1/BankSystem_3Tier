@@ -1,5 +1,6 @@
 package tier3.dao;
 
+
 import model.User;
 
 public interface UserAccountDAO {

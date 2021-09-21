@@ -1,9 +1,7 @@
 package tier3.dao;
 
-import model.Account;
-import model.User;
 
-import java.math.BigDecimal;
+import model.User;
 import java.sql.*;
 
 public class UserAccountImpl implements UserAccountDAO {

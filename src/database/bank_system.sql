@@ -30,7 +30,7 @@ create table Transaction
 );
 
 insert into "user"(cpr, password, type)
-values ('1001102932', '12345', 'Customer');
+values ('1001102932', '123456', 'Customer');
 
 insert into account(account_number, balance, owner)
 values (114509, 900.2, '1001102932');

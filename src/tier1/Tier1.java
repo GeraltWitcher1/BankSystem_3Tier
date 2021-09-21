@@ -1,8 +1,3 @@
-/*
- * 12.09.2018 Original version
- */
-
-
 package tier1;
 
 
@@ -10,6 +5,7 @@ import common.ITier2;
 
 import static common.ITier2.T2_SERVICE_NAME;
 
+import java.math.BigDecimal;
 import java.rmi.Naming;
 
 
@@ -20,7 +16,7 @@ public class Tier1 {
         try {
             ITier2 tier2 = (ITier2) Naming.lookup(T2_SERVICE_NAME);
 
-            double amount = 85.17;
+            BigDecimal amount = BigDecimal.valueOf(85.17);
 
             while (tier2.withdraw(114509, amount))
                 System.out.println("Withdrawn: " + amount);

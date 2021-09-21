@@ -1,5 +1,6 @@
 package tier3.dao;
 
+
 import model.Account;
 
 import java.math.BigDecimal;
@@ -49,6 +50,24 @@ public class BankAccountImpl implements BankAccountDAO {
             PreparedStatement statement = connection.prepareStatement(
                     "SELECT * FROM account WHERE account_number = ?");
             statement.setInt(1, accountNr);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return createAccount(resultSet);
+            }
+            return null;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public Account read(String cpr) {
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(
+                    "SELECT * FROM account JOIN \"user\" u on u.cpr = account.owner WHERE u.cpr = ?");
+            statement.setString(1, cpr);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return createAccount(resultSet);

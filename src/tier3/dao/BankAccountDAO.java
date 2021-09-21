@@ -1,13 +1,12 @@
 package tier3.dao;
 
-import model.Account;
-import model.User;
 
-import java.sql.SQLException;
+import model.Account;
 
 public interface BankAccountDAO {
-    Account create(String username, int accountNr);
+    Account create(String cpr, int accountNr);
     Account read(int accountNr);
+    Account read(String cpr);
     boolean update(Account account);
     boolean delete(Account account);
 }

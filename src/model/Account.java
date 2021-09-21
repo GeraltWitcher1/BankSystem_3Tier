@@ -1,7 +1,3 @@
-/*
- * 12.09.2018 Original version
- */
-
 package model;
 
 

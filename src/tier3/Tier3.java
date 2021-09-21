@@ -1,8 +1,3 @@
-/*
- * 12.09.2018 Original version
- */
-
-
 package tier3;
 
 public class Tier3 {

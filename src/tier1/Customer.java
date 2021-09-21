@@ -3,6 +3,7 @@ package tier1;
 import common.ITier2;
 import model.User;
 
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -44,7 +45,7 @@ public class Customer {
                 break;
             }
             else if (cmd.equals("withdraw")) {
-                int accountNr = tier2.getMainAccountNr(
+                int accountNr = tier2.getAccountNr(
                         me.getCpr()
                 );
                 boolean success = tier2.withdraw(
@@ -61,7 +62,7 @@ public class Customer {
 
     }
 
-    private static double getAmount() {
+    private static BigDecimal getAmount() {
         System.out.print("Please enter the amount: ");
         String amount = scan.nextLine();
         while (!amount.matches("^[0-9]+$")) {
@@ -69,18 +70,17 @@ public class Customer {
             System.out.print("Enter the amount: ");
             amount = scan.nextLine();
         }
-        return Double.parseDouble(amount);
+        return BigDecimal.valueOf(Double.parseDouble(amount));
     }
 
     private static User makeUser() {
         System.out.println("Please login first!");
 
-        System.out.print("username :");
-        String username = scan.nextLine();
-        while (username == null || username.length() <= 5) {
-            System.out.println("Username must be longer the 5 characters");
+        String cpr = scan.nextLine();
+        while (cpr == null || !cpr.matches("^[0-9]{10}$")) {
+            System.out.println("CPR must be 10 digit long.");
             System.out.print("Try again! username: ");
-            username = scan.nextLine();
+            cpr = scan.nextLine();
         }
 
         System.out.print("password :");
@@ -91,6 +91,6 @@ public class Customer {
             password = scan.nextLine();
         }
 
-        return new User(username, password, User.CUSTOMER);
+        return new User(cpr, password, User.CUSTOMER);
     }
 }

@@ -1,6 +1,7 @@
 package tier1;
 
 import common.ITier2;
+import model.Account;
 import model.User;
 
 import java.net.MalformedURLException;
@@ -39,9 +40,10 @@ public class Admin {
             }
             else if (cmd.equals("create")) {
                 User user = createNewUser();
+                Account account = tier2.createUserAndBankAccount(user);
                 System.out.println(
-                        tier2.createUserAccount(user)
-                                ? "Account created."
+                        account != null
+                                ? "Account with the number " + account.getNumber() + " created."
                                 : "Account could not be created."
                 );
             }
@@ -51,12 +53,12 @@ public class Admin {
     }
 
     private static User createNewUser() {
-        System.out.print("Please enter the new customer's username: ");
-        String username = scan.nextLine();
-        while (username == null || username.length() <= 5) {
-            System.out.println("Username must be longer the 5 characters");
-            System.out.print("Please enter the new customer's username: ");
-            username = scan.nextLine();
+        System.out.print("Please enter the new customer's cpr: ");
+        String cpr = scan.nextLine();
+        while (cpr == null || !cpr.matches("^[0-9]{10}$")) {
+            System.out.println("CPR must be 10 digit long.");
+            System.out.print("Please enter the new customer's cpr: ");
+            cpr = scan.nextLine();
         }
 
         String password = "default";
@@ -85,7 +87,7 @@ public class Admin {
             }
         } while (incorrectInput);
 
-        return new User(username, password, type);
+        return new User(cpr, password, type);
     }
 
 

@@ -1,8 +1,3 @@
-/*
- * 12.09.2018 Original version
- */
-
-
 package tier3;
 
 
@@ -11,19 +6,21 @@ import model.Account;
 import model.User;
 import tier3.dao.BankAccountDAO;
 import tier3.dao.BankAccountImpl;
+import tier3.dao.UserAccountDAO;
+import tier3.dao.UserAccountImpl;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.SQLException;
 
 
 public class Tier3Controller
         extends UnicastRemoteObject
         implements ITier3 {
 
-    private BankAccountDAO accountDAO;
+    private BankAccountDAO bankAccountDAO;
+    private UserAccountDAO userDAO;
 
 
     public Tier3Controller()
@@ -31,7 +28,9 @@ public class Tier3Controller
         try {
             LocateRegistry.createRegistry(1099);
             Naming.rebind(T3_SERVICE_NAME, this);
-            accountDAO = BankAccountImpl.getInstance();
+
+            bankAccountDAO = BankAccountImpl.getInstance();
+            userDAO = UserAccountImpl.getInstance();
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -40,39 +39,49 @@ public class Tier3Controller
     }
 
 
-    public Account getAccount(int accountNumber)
-            throws RemoteException {
-        return accountDAO.getAccount(accountNumber);
+    @Override
+    public Account createAccount(String cpr, int accountNr) throws RemoteException {
+        return bankAccountDAO.create(cpr, accountNr);
     }
 
+    public Account getAccount(int accountNumber)
+            throws RemoteException {
+        return bankAccountDAO.read(accountNumber);
+    }
+
+    public Account getAccount(String cpr)
+            throws RemoteException {
+        return bankAccountDAO.read(cpr);
+    }
 
     public boolean updateAccount(Account account)
             throws RemoteException {
-        return accountDAO.updateAccount(account);
+        return bankAccountDAO.update(account);
     }
 
     @Override
-    public boolean createUserAccount(User user) throws RemoteException {
-        try {
-            return accountDAO.createUserAccount(user);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+    public boolean deleteAccount(Account account) throws RemoteException {
+        return bankAccountDAO.delete(account);
+    }
+
+
+    @Override
+    public boolean createUser(User user) throws RemoteException {
+        return userDAO.create(user);
     }
 
     @Override
-    public boolean isTaken(String username) throws RemoteException {
-        return accountDAO.isTaken(username);
+    public User getUser(String cpr) throws RemoteException {
+        return userDAO.read(cpr);
     }
 
     @Override
-    public boolean login(User user) throws RemoteException {
-        return accountDAO.login(user);
+    public boolean updateUser(User user) throws RemoteException {
+        return userDAO.update(user);
     }
 
     @Override
-    public int getAccountNumber(String username) throws RemoteException {
-        return accountDAO.getAccountNumber(username);
+    public boolean deleteUser(User user) throws RemoteException {
+        return userDAO.delete(user);
     }
 }
