@@ -1,49 +1,39 @@
 package model;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 public class User
         implements Serializable {
 
-    public enum Type {
-        CLERK("Clerk"),
-        ADMIN("Admin"),
-        CUSTOMER("Customer");
+    public static final String CLERK = "Clerk";
+    public static final String ADMIN = "Admin";
+    public static final String CUSTOMER = "Customer";
 
-        private final String type;
-
-        Type(String type) {
-            this.type = type;
-        }
-        public String getType() {
-            return type;
-        }
-    }
-
-
-    private final String username;
+    private final String cpr;
     private final String password;
-    private final Type type;
+    private final String type;
 
-    public User(String username, String password, Type type) {
-        if (username == null || username.trim().equals("")) {
-            throw new IllegalArgumentException("Username cannot be empty.");
+    public User(String cpr, String password, String type) {
+        if (cpr == null || cpr.matches("^[0-9]{10}$")) {
+            throw new IllegalArgumentException("CPR must be 10 digits long.");
         }
-        this.username = username;
+        this.cpr = cpr;
 
         if (password == null || password.length() <= 5) {
             throw new IllegalArgumentException("Password must be longer than 5 characters.");
         }
         this.password = password;
 
-        if (type == null) {
+        if (type == null ||
+                Arrays.asList(new String[] {CLERK, CUSTOMER, ADMIN}).contains(type)) {
             throw new IllegalArgumentException("Type cannot be null.");
         }
         this.type = type;
     }
 
-    public String getUsername() {
-        return username;
+    public String getCpr() {
+        return cpr;
     }
 
     public String getPassword() {
@@ -51,6 +41,6 @@ public class User
     }
 
     public String getType() {
-        return type.getType();
+        return type;
     }
 }

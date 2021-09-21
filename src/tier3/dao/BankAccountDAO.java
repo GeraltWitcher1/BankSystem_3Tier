@@ -6,15 +6,8 @@ import model.User;
 import java.sql.SQLException;
 
 public interface BankAccountDAO {
-    boolean createUserAccount(User user) throws SQLException;
-
-    Account getAccount(int accountNr);
-
-    boolean isTaken(String username);
-
-    boolean updateAccount(Account account);
-
-    boolean login(User user);
-
-    int getAccountNumber(String username);
+    Account create(String username, int accountNr);
+    Account read(int accountNr);
+    boolean update(Account account);
+    boolean delete(Account account);
 }

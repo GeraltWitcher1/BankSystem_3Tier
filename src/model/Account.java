@@ -6,17 +6,20 @@ package model;
 
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 
 public class Account
         implements Serializable {
     private int number;
-    private double balance;
+    private BigDecimal balance;
+    private String owner;
 
 
-    public Account(int number, double balance) {
+    public Account(int number, BigDecimal balance, String owner) {
         this.number = number;
         this.balance = balance;
+        this.owner = owner;
     }
 
 
@@ -25,12 +28,12 @@ public class Account
     }
 
 
-    public double getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
 
-    public void updateBalance(double amount) {
-        balance += amount;
+    public void updateBalance(BigDecimal amount) {
+        balance = balance.add(amount);
     }
 }

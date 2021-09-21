@@ -24,5 +24,5 @@ public interface ITier2
 	int getMainAccountNr(String username) throws RemoteException;
 	
 	
-	String T2_SERVICE_NAME = "rmi://localhost:2020/T2";
+	String T2_SERVICE_NAME = "T2";
 }

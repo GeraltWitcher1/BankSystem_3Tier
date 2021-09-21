@@ -1,21 +1,22 @@
 package tier3.dao;
 
 import model.Account;
+import model.User;
 
 import java.math.BigDecimal;
 import java.sql.*;
 
-public class BankAccountImpl implements BankAccountDAO {
-    private static BankAccountImpl instance;
+public class UserAccountImpl implements UserAccountDAO {
+    private static UserAccountImpl instance;
 
-    private BankAccountImpl() throws SQLException {
+    private UserAccountImpl() throws SQLException {
         DriverManager.registerDriver(new org.postgresql.Driver());
     }
 
-    public static synchronized BankAccountImpl getInstance()
+    public static synchronized UserAccountImpl getInstance()
             throws SQLException {
         if (instance == null) {
-            instance = new BankAccountImpl();
+            instance = new UserAccountImpl();
         }
         return instance;
     }
@@ -27,55 +28,13 @@ public class BankAccountImpl implements BankAccountDAO {
     }
 
     @Override
-    public Account create(String username, int accountNr) {
+    public boolean create(User user) {
         try (Connection connection = getConnection()) {
             PreparedStatement statement = connection.prepareStatement(
-                    "INSERT INTO account(account_number, balance, owner) VALUES (?, ?, ?);");
-            statement.setInt(1, accountNr);
-            statement.setBigDecimal(2, BigDecimal.ZERO);
-            statement.setString(3, username);
-            statement.executeUpdate();
-            return new Account(accountNr, BigDecimal.ZERO, username);
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
-    public Account read(int accountNr) {
-        try (Connection connection = getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(
-                    "SELECT * FROM account WHERE account_number = ?");
-            statement.setInt(1, accountNr);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return createAccount(resultSet);
-            }
-            return null;
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private Account createAccount(ResultSet resultSet) throws SQLException {
-        return new Account(
-                resultSet.getInt("account_number"),
-                resultSet.getBigDecimal("balance"),
-                resultSet.getString("owner")
-        );
-    }
-
-    @Override
-    public boolean update(Account account) {
-        try (Connection connection = getConnection()) {
-            PreparedStatement statement = connection
-                    .prepareStatement("UPDATE account SET balance = ? WHERE account_number = ?");
-            statement.setBigDecimal(1, account.getBalance() );
-            statement.setInt(2, account.getNumber() );
+                    "INSERT INTO \"user\"(cpr, password, type) VALUES (?, ?, ?);");
+            statement.setString(1, user.getCpr());
+            statement.setString(2, user.getPassword());
+            statement.setString(3, user.getType());
             statement.executeUpdate();
             return true;
         }
@@ -86,11 +45,54 @@ public class BankAccountImpl implements BankAccountDAO {
     }
 
     @Override
-    public boolean delete(Account account) {
+    public User read(String cpr) {
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(
+                    "SELECT * FROM \"user\" WHERE cpr = ?");
+            statement.setString(1, cpr);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return createUser(resultSet);
+            }
+            return null;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private User createUser(ResultSet resultSet) throws SQLException {
+        return new User(
+                resultSet.getString("cpr"),
+                resultSet.getString("password"),
+                resultSet.getString("type")
+        );
+    }
+
+    @Override
+    public boolean update(User user) {
         try (Connection connection = getConnection()) {
             PreparedStatement statement = connection
-                    .prepareStatement("DELETE FROM account WHERE account_number = ?");
-            statement.setInt(1, account.getNumber() );
+                    .prepareStatement("UPDATE \"user\" SET password = ? and type = ? WHERE cpr = ?");
+            statement.setString(1, user.getPassword() );
+            statement.setString(2, user.getType() );
+            statement.setString(3, user.getCpr() );
+            statement.executeUpdate();
+            return true;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public boolean delete(User user) {
+        try (Connection connection = getConnection()) {
+            PreparedStatement statement = connection
+                    .prepareStatement("DELETE FROM \"user\" WHERE cpr = ?");
+            statement.setString(1, user.getCpr() );
             statement.executeUpdate();
             return true;
         }

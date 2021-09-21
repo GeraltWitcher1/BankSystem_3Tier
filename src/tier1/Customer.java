@@ -45,7 +45,7 @@ public class Customer {
             }
             else if (cmd.equals("withdraw")) {
                 int accountNr = tier2.getMainAccountNr(
-                        me.getUsername()
+                        me.getCpr()
                 );
                 boolean success = tier2.withdraw(
                         accountNr,
@@ -91,6 +91,6 @@ public class Customer {
             password = scan.nextLine();
         }
 
-        return new User(username, password, User.Type.CUSTOMER);
+        return new User(username, password, User.CUSTOMER);
     }
 }

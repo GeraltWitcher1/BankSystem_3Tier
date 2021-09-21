@@ -61,22 +61,22 @@ public class Admin {
 
         String password = "default";
 
-        User.Type type = null;
+        String type = null;
         boolean incorrectInput;
         do {
             System.out.println("Please enter the new customer's type: (clerk, admin, customer)");
             String inputType = scan.nextLine();
             switch (inputType) {
                 case "clerk":
-                    type = User.Type.CLERK;
+                    type = User.CLERK;
                     incorrectInput = false;
                     break;
                 case "admin":
-                    type = User.Type.ADMIN;
+                    type = User.ADMIN;
                     incorrectInput = false;
                     break;
                 case "customer":
-                    type = User.Type.CUSTOMER;
+                    type = User.CUSTOMER;
                     incorrectInput = false;
                     break;
                 default:

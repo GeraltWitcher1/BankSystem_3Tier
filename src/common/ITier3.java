@@ -28,5 +28,5 @@ public interface ITier3
 
 	int getAccountNumber(String username) throws RemoteException;
 	
-	String T3_SERVICE_NAME = "rmi://localhost:1099/T3";
+	String T3_SERVICE_NAME = "T3";
 }

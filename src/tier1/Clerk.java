@@ -46,7 +46,7 @@ public class Clerk {
             }
             else if (cmd.equals("deposit")) {
                 int accountNr = tier2.getMainAccountNr(
-                        me.getUsername()
+                        me.getCpr()
                 );
                 boolean success = tier2.deposit(
                         accountNr,
@@ -58,7 +58,7 @@ public class Clerk {
             }
             else if (cmd.equals("withdraw")) {
                 int accountNr = tier2.getMainAccountNr(
-                        me.getUsername()
+                        me.getCpr()
                 );
                 boolean success = tier2.withdraw(
                         accountNr,
@@ -104,6 +104,6 @@ public class Clerk {
             password = scan.nextLine();
         }
 
-        return new User(username, password, User.Type.CLERK);
+        return new User(username, password, User.CLERK);
     }
 }
