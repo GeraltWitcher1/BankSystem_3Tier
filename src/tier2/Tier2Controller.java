@@ -4,6 +4,7 @@ package tier2;
 import common.ITier2;
 import common.ITier3;
 import model.Account;
+import model.Transaction;
 import model.User;
 
 import java.math.BigDecimal;
@@ -35,7 +36,7 @@ public class Tier2Controller
     }
 
     @Override
-    public boolean withdraw(int accountNumber, BigDecimal amount)
+    public boolean withdraw(int accountNumber, String cpr, BigDecimal amount)
             throws RemoteException {
         Account account = tier3.getAccount(accountNumber);
 
@@ -45,12 +46,20 @@ public class Tier2Controller
             return false;
         else {
             account.updateBalance(amount.negate());
+            Transaction transaction = new Transaction(
+                    account,
+                    cpr,
+                    amount,
+                    Transaction.WITHDRAWAL
+
+            );
+            tier3.addTransaction(transaction);
             return tier3.updateAccount(account);
         }
     }
 
     @Override
-    public boolean deposit(int accountNumber, BigDecimal amount)
+    public boolean deposit(int accountNumber, String cpr, BigDecimal amount)
             throws RemoteException {
         Account account = tier3.getAccount(accountNumber);
 
@@ -60,6 +69,13 @@ public class Tier2Controller
             return false;
         else {
             account.updateBalance(amount);
+            Transaction transaction = new Transaction(
+                    account,
+                    cpr,
+                    amount,
+                    Transaction.DEPOSIT
+            );
+            tier3.addTransaction(transaction);
             return tier3.updateAccount(account);
         }
     }

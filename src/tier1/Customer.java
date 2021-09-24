@@ -50,6 +50,7 @@ public class Customer {
                 );
                 boolean success = tier2.withdraw(
                         accountNr,
+                        me.getCpr(),
                         getAmount()
                 );
 
@@ -76,6 +77,7 @@ public class Customer {
     private static User makeUser() {
         System.out.println("Please login first!");
 
+        System.out.print("cpr :");
         String cpr = scan.nextLine();
         while (cpr == null || !cpr.matches("^[0-9]{10}$")) {
             System.out.println("CPR must be 10 digit long.");

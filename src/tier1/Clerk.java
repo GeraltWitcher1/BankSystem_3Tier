@@ -51,6 +51,7 @@ public class Clerk {
                 );
                 boolean success = tier2.deposit(
                         accountNr,
+                        me.getCpr(),
                         getAmount()
                 );
 
@@ -63,6 +64,7 @@ public class Clerk {
                 );
                 boolean success = tier2.withdraw(
                         accountNr,
+                        me.getCpr(),
                         getAmount()
                 );
 

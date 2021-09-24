@@ -3,11 +3,9 @@ package tier3;
 
 import common.ITier3;
 import model.Account;
+import model.Transaction;
 import model.User;
-import tier3.dao.BankAccountDAO;
-import tier3.dao.BankAccountImpl;
-import tier3.dao.UserAccountDAO;
-import tier3.dao.UserAccountImpl;
+import tier3.dao.*;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
@@ -21,6 +19,7 @@ public class Tier3Controller
 
     private BankAccountDAO bankAccountDAO;
     private UserAccountDAO userDAO;
+    private TransactionDAO transactionDAO;
 
 
     public Tier3Controller()
@@ -31,6 +30,7 @@ public class Tier3Controller
 
             bankAccountDAO = BankAccountImpl.getInstance();
             userDAO = UserAccountImpl.getInstance();
+            transactionDAO = TransactionImpl.getInstance();
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -83,5 +83,10 @@ public class Tier3Controller
     @Override
     public boolean deleteUser(User user) throws RemoteException {
         return userDAO.delete(user);
+    }
+
+    @Override
+    public boolean addTransaction(Transaction transaction) throws RemoteException {
+        return transactionDAO.create(transaction);
     }
 }

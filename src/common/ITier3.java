@@ -2,6 +2,7 @@ package common;
 
 
 import model.Account;
+import model.Transaction;
 import model.User;
 
 import java.rmi.Remote;
@@ -21,6 +22,8 @@ public interface ITier3
 	User getUser(String cpr) throws RemoteException;
 	boolean updateUser(User user) throws RemoteException;
 	boolean deleteUser(User user) throws RemoteException;
+
+	boolean addTransaction(Transaction transaction) throws RemoteException;
 
 	
 	String T3_SERVICE_NAME = "T3";

@@ -12,8 +12,8 @@ import java.rmi.RemoteException;
 public interface ITier2
 	extends Remote
 {
-	boolean withdraw(int accountNumber, BigDecimal amount) throws RemoteException;
-	boolean deposit(int accountNumber, BigDecimal amount) throws RemoteException;
+	boolean withdraw(int accountNumber, String cpr, BigDecimal amount) throws RemoteException;
+	boolean deposit(int accountNumber, String cpr, BigDecimal amount) throws RemoteException;
 
 	Account createUserAndBankAccount(User user) throws RemoteException;
 

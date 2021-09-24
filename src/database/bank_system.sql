@@ -15,18 +15,19 @@ create table Account
 (
     account_number int CHECK (account_number between 100000 and 999999),
     balance decimal(12,2) not null,
-    "owner" varchar(10) references "user"(cpr) not null,
+    "owner" varchar(10) not null references "user"(cpr) ON delete cascade,
     PRIMARY KEY (account_number)
 );
 
 create table Transaction
 (
-    account_number int references Account(account_number),
-    user_cpr varchar(10) references "user"(cpr) not null,
+    transaction_id SERIAL,
+    account_number int references Account(account_number) ON delete cascade,
+    user_cpr varchar(10) not null references "user"(cpr) ON delete cascade,
     amount decimal(8,2) check ( amount > 0 ) not null ,
-    date_time date,
-    type varchar check (type in('Deposit, Withdraw')),
-    PRIMARY KEY (account_number,user_cpr,date_time)
+    date_time timestamp,
+    type varchar check (type in('Deposit', 'Withdrawal')),
+    PRIMARY KEY (transaction_id)
 );
 
 insert into "user"(cpr, password, type)
