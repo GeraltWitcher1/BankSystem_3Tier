@@ -6,13 +6,15 @@ import common.ITier3;
 import model.Account;
 import model.Transaction;
 import model.User;
+import tier1.RemoteSender;
 
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Random;
+import java.util.*;
 
 import static common.ITier3.T3_SERVICE_NAME;
 
@@ -21,12 +23,14 @@ public class Tier2Controller
         implements ITier2 {
 
     private ITier3 tier3;
+    private HashMap<Integer, ArrayList<RemoteSender>> remoteUsers;
 
     public Tier2Controller()
             throws RemoteException {
         try {
             LocateRegistry.createRegistry(2020);
             Naming.rebind(T2_SERVICE_NAME, this);
+            remoteUsers = new HashMap<>();
 
             tier3 = (ITier3) Naming.lookup(T3_SERVICE_NAME);
         } catch (Exception ex) {
@@ -42,7 +46,7 @@ public class Tier2Controller
 
         if (account == null)
             return false;
-        else if (amount.compareTo(BigDecimal.ZERO) <= 0 || amount.compareTo(account.getBalance()) > 0 )
+        else if (amount.compareTo(BigDecimal.ZERO) <= 0 || amount.compareTo(account.getBalance()) > 0)
             return false;
         else {
             account.updateBalance(amount.negate());
@@ -53,6 +57,16 @@ public class Tier2Controller
                     Transaction.WITHDRAWAL
 
             );
+
+            ArrayList<RemoteSender> users = remoteUsers.get(account.getNumber());
+            for (var user : users) {
+                try {
+                    user.showBalance(account.getNumber(), account.getBalance());
+                }
+                catch (Exception ignored) {
+                }
+            }
+
             tier3.addTransaction(transaction);
             return tier3.updateAccount(account);
         }
@@ -75,6 +89,12 @@ public class Tier2Controller
                     amount,
                     Transaction.DEPOSIT
             );
+
+            ArrayList<RemoteSender> users = remoteUsers.get(account.getNumber());
+            for (var user : users) {
+                user.showBalance(account.getNumber(), account.getBalance());
+            }
+
             tier3.addTransaction(transaction);
             return tier3.updateAccount(account);
         }
@@ -97,13 +117,32 @@ public class Tier2Controller
     }
 
     @Override
-    public boolean login(User user) throws RemoteException {
+    public boolean login(User user, RemoteSender remoteUser) throws RemoteException {
         User tmp = tier3.getUser(user.getCpr());
 
-        return user.getCpr().equals(tmp.getCpr()) &&
+        boolean loggedIn = user.getCpr().equals(tmp.getCpr()) &&
                 user.getPassword().equals(tmp.getPassword()) &&
                 user.getType().equals(tmp.getType());
+
+        if (loggedIn) {
+            int accNr = tier3.getAccount(user.getCpr()).getNumber();
+            if (remoteUsers.containsKey(accNr)) {
+                remoteUsers.get(accNr).add(remoteUser);
+            }
+            else {
+                remoteUsers.put(accNr, new ArrayList<>(List.of(remoteUser)));
+            }
+        }
+        return loggedIn;
     }
+
+    @Override
+    public void logout(String cpr, RemoteSender remoteUser) throws RemoteException{
+        int accNr = tier3.getAccount(cpr).getNumber();
+        System.out.println(accNr);
+        System.out.println(remoteUsers.get(accNr).remove(remoteUser));
+    }
+
 
     @Override
     public int getAccountNr(String cpr) throws RemoteException {

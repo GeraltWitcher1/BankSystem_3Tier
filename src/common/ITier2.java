@@ -3,6 +3,7 @@ package common;
 
 import model.Account;
 import model.User;
+import tier1.RemoteSender;
 
 import java.math.BigDecimal;
 import java.rmi.Remote;
@@ -19,7 +20,8 @@ public interface ITier2
 
 	int getAccountNr(String cpr) throws RemoteException;
 	String getBalance(int accountNumber) throws RemoteException;
-	boolean login(User user) throws RemoteException;
+	boolean login(User user, RemoteSender remoteUser) throws RemoteException;
+	void logout(String cpr, RemoteSender remoteSender) throws RemoteException;
 	
 	
 	String T2_SERVICE_NAME = "T2";

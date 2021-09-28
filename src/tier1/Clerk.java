@@ -8,105 +8,69 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.util.Scanner;
+import java.rmi.server.UnicastRemoteObject;
 
 import static common.ITier2.T2_SERVICE_NAME;
 
-public class Clerk {
+public class Clerk implements RemoteSender {
 
-    private static final Scanner scan = new Scanner(System.in);
+    private ITier2 tier2;
+    private User me;
+    private boolean isLoggedIn;
 
-    public static void main(String[] args) {
+    public Clerk() {
         try {
-            runClerk();
-        } catch (MalformedURLException | NotBoundException | RemoteException e) {
+            UnicastRemoteObject.exportObject(this, 0);
+            tier2 = (ITier2) Naming.lookup(T2_SERVICE_NAME);
+
+            me = null;
+            isLoggedIn = false;
+
+        } catch (NotBoundException | MalformedURLException | RemoteException e) {
             e.printStackTrace();
         }
-
     }
 
-    private static void runClerk() throws MalformedURLException, NotBoundException, RemoteException {
-        ITier2 tier2 = (ITier2) Naming.lookup(T2_SERVICE_NAME);
-        System.out.println("Clerk client running...");
-
-        User me = null;
-
-        boolean loggedIn = false;
-        while (!loggedIn) {
-            me = makeUser();
-            loggedIn = tier2.login(me);
-            if (!loggedIn) System.out.println("Incorrect cpr or password! Or invalid user access");
-        }
-
-        while (true) {
-            System.out.println("Commands: close | deposit | withdraw ");
-            String cmd = scan.nextLine();
-
-            if (cmd.equals("close")) {
-                break;
-            }
-            else if (cmd.equals("deposit")) {
-                int accountNr = tier2.getAccountNr(
-                        me.getCpr()
-                );
-                boolean success = tier2.deposit(
-                        accountNr,
-                        me.getCpr(),
-                        getAmount()
-                );
-
-                System.out.println(success? "The transaction was a success" : "Transaction Denied");
-                System.out.println("Account balance: " + tier2.getBalance(accountNr));
-            }
-            else if (cmd.equals("withdraw")) {
-                int accountNr = tier2.getAccountNr(
-                        me.getCpr()
-                );
-                boolean success = tier2.withdraw(
-                        accountNr,
-                        me.getCpr(),
-                        getAmount()
-                );
-
-                System.out.println(success? "The transaction was a success" : "Transaction Denied");
-                System.out.println("Account balance: " + tier2.getBalance(accountNr));
-            }
-            else
-                System.out.println("Error: Unknown command.");
-        }
-
+    public boolean login(User me) throws RemoteException {
+        isLoggedIn = tier2.login(me, this);
+        if (isLoggedIn)
+            this.me = me;
+        return isLoggedIn;
     }
 
-    private static BigDecimal getAmount() {
-        System.out.print("Please enter the amount: ");
-        String amount = scan.nextLine();
-        while (!amount.matches("^[0-9]+(\\.[0-9]{1,2})?$")) {
-            System.out.println("Please input a number!");
-            System.out.print("Enter the amount: ");
-            amount = scan.nextLine();
-        }
-        return BigDecimal.valueOf(Double.parseDouble(amount));
+    public void logout() throws RemoteException {
+        tier2.logout(me.getCpr(), this);
+        UnicastRemoteObject.unexportObject(this, true);
     }
 
-    private static User makeUser() {
-        System.out.println("Please login first!");
+    public void withdraw(BigDecimal amount) throws RemoteException {
+        int accountNr = tier2.getAccountNr(
+                me.getCpr()
+        );
+        boolean success = tier2.withdraw(
+                accountNr,
+                me.getCpr(),
+                amount
+        );
 
-        System.out.print("cpr :");
-        String cpr = scan.nextLine();
-        while (cpr == null || !cpr.matches("^[0-9]{10}$")) {
-            System.out.println("CPR must be 10 digit long.");
-            System.out.print("Try again! username: ");
-            cpr = scan.nextLine();
-        }
+        System.out.println(success? "The transaction was a success" : "Transaction Denied");
+    }
 
-        System.out.print("password :");
-        String password = scan.nextLine();
-        while (password == null) {
-            System.out.println("Password cannot be null");
-            System.out.print("Try again! password: ");
-            password = scan.nextLine();
-        }
+    public void deposit(BigDecimal amount) throws RemoteException {
+        int accountNr = tier2.getAccountNr(
+                me.getCpr()
+        );
+        boolean success = tier2.deposit(
+                accountNr,
+                me.getCpr(),
+                amount
+        );
 
-        return new User(cpr, password, User.CLERK);
+        System.out.println(success? "The transaction was a success" : "Transaction Denied");
+    }
+
+    @Override
+    public void showBalance(int accountNr, BigDecimal balance) throws RemoteException {
+        System.out.printf("The balance of your account (#%d) is %s\n", accountNr, balance.toPlainString());
     }
 }
