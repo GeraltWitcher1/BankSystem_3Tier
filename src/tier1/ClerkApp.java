@@ -33,12 +33,18 @@ public class ClerkApp {
         }
 
         while (true) {
-            System.out.println("Commands: close | deposit | withdraw ");
+            System.out.println("Commands: close | deposit | withdraw | accountDeposit");
             String cmd = scan.nextLine();
 
             if (cmd.equals("close")) {
                 clerk.logout();
                 break;
+            }
+            else if (cmd.equals("accountDeposit")) {
+                clerk.depositForCustomer(
+                        getAccountNr(),
+                        getAmount()
+                );
             }
             else if (cmd.equals("deposit")) {
                 clerk.deposit(getAmount());
@@ -50,6 +56,17 @@ public class ClerkApp {
                 System.out.println("Error: Unknown command.");
         }
 
+    }
+
+    private static int getAccountNr() {
+        System.out.print("Please enter the account number: ");
+        String amount = scan.nextLine();
+        while (!amount.matches("^[1-9][0-9]{5}$")) {
+            System.out.println("INVALID ACCOUNT NR! It must be 6 digits");
+            System.out.print("Enter the account number: ");
+            amount = scan.nextLine();
+        }
+        return Integer.parseInt(amount);
     }
 
     private static BigDecimal getAmount() {

@@ -55,6 +55,9 @@ public class Customer implements RemoteSender {
         );
 
         System.out.println(success? "The transaction was a success" : "Transaction Denied");
+        if (!success) {
+            System.out.println("Your account balance is " + tier2.getBalance(accountNr));
+        }
     }
 
 

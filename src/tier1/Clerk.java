@@ -54,6 +54,9 @@ public class Clerk implements RemoteSender {
         );
 
         System.out.println(success? "The transaction was a success" : "Transaction Denied");
+        if (!success) {
+            System.out.println("Your account balance is " + tier2.getBalance(accountNr));
+        }
     }
 
     public void deposit(BigDecimal amount) throws RemoteException {
@@ -66,6 +69,16 @@ public class Clerk implements RemoteSender {
                 amount
         );
 
+        System.out.println(success? "The transaction was a success" : "Transaction Denied");
+    }
+
+    // TODO: 28.09.2021 (by Ion)  use customer's cpr or the account nr
+    public void depositForCustomer(int accountNr , BigDecimal amount) throws RemoteException {
+        boolean success = tier2.deposit(
+                accountNr,
+                me.getCpr(),
+                amount
+        );
         System.out.println(success? "The transaction was a success" : "Transaction Denied");
     }
 
