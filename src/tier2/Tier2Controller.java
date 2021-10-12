@@ -9,6 +9,7 @@ import model.User;
 import tier1.RemoteSender;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Executable;
 import java.math.BigDecimal;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
@@ -58,14 +59,13 @@ public class Tier2Controller
 
             );
 
-            ArrayList<RemoteSender> users = remoteUsers.get(account.getNumber());
-            for (var user : users) {
-                try {
+            try {
+                ArrayList<RemoteSender> users = remoteUsers.get(account.getNumber());
+                for (var user : users) {
                     user.showBalance(account.getNumber(), account.getBalance());
                 }
-                catch (Exception ignored) {
-                }
             }
+            catch (Exception ignored) {}
 
             tier3.addTransaction(transaction);
             return tier3.updateAccount(account);
@@ -90,10 +90,14 @@ public class Tier2Controller
                     Transaction.DEPOSIT
             );
 
-            ArrayList<RemoteSender> users = remoteUsers.get(account.getNumber());
-            for (var user : users) {
-                user.showBalance(account.getNumber(), account.getBalance());
+            try {
+                ArrayList<RemoteSender> users = remoteUsers.get(account.getNumber());
+                for (var user : users) {
+                    user.showBalance(account.getNumber(), account.getBalance());
+                }
             }
+            catch (NullPointerException ignored) {}
+
 
             tier3.addTransaction(transaction);
             return tier3.updateAccount(account);
@@ -128,8 +132,7 @@ public class Tier2Controller
             int accNr = tier3.getAccount(user.getCpr()).getNumber();
             if (remoteUsers.containsKey(accNr)) {
                 remoteUsers.get(accNr).add(remoteUser);
-            }
-            else {
+            } else {
                 remoteUsers.put(accNr, new ArrayList<>(List.of(remoteUser)));
             }
         }
@@ -137,7 +140,7 @@ public class Tier2Controller
     }
 
     @Override
-    public void logout(String cpr, RemoteSender remoteUser) throws RemoteException{
+    public void logout(String cpr, RemoteSender remoteUser) throws RemoteException {
         int accNr = tier3.getAccount(cpr).getNumber();
         System.out.println(accNr);
         System.out.println(remoteUsers.get(accNr).remove(remoteUser));

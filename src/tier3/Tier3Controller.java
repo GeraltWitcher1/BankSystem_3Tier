@@ -44,16 +44,19 @@ public class Tier3Controller
         return bankAccountDAO.create(cpr, accountNr);
     }
 
+    @Override
     public Account getAccount(int accountNumber)
             throws RemoteException {
         return bankAccountDAO.read(accountNumber);
     }
 
+    @Override
     public Account getAccount(String cpr)
             throws RemoteException {
         return bankAccountDAO.read(cpr);
     }
 
+    @Override
     public boolean updateAccount(Account account)
             throws RemoteException {
         return bankAccountDAO.update(account);
