@@ -7,5 +7,5 @@ public interface UserAccountDAO {
     boolean create(User user);
     User read(String cpr);
     boolean update(User user);
-    boolean delete(User user);
+    boolean delete(String cpr);
 }

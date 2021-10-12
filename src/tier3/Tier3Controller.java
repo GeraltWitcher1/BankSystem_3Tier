@@ -63,8 +63,8 @@ public class Tier3Controller
     }
 
     @Override
-    public boolean deleteAccount(Account account) throws RemoteException {
-        return bankAccountDAO.delete(account);
+    public boolean deleteAccount(int accountNr) throws RemoteException {
+        return bankAccountDAO.delete(accountNr);
     }
 
 
@@ -84,8 +84,8 @@ public class Tier3Controller
     }
 
     @Override
-    public boolean deleteUser(User user) throws RemoteException {
-        return userDAO.delete(user);
+    public boolean deleteUser(String cpr) throws RemoteException {
+        return userDAO.delete(cpr);
     }
 
     @Override

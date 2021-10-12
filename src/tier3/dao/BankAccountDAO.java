@@ -8,5 +8,5 @@ public interface BankAccountDAO {
     Account read(int accountNr);
     Account read(String cpr);
     boolean update(Account account);
-    boolean delete(Account account);
+    boolean delete(int accountNr);
 }

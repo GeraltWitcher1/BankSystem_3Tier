@@ -86,11 +86,11 @@ public class UserAccountImpl implements UserAccountDAO {
     }
 
     @Override
-    public boolean delete(User user) {
+    public boolean delete(String cpr) {
         try (Connection connection = getConnection()) {
             PreparedStatement statement = connection
                     .prepareStatement("DELETE FROM \"user\" WHERE cpr = ?");
-            statement.setString(1, user.getCpr() );
+            statement.setString(1, cpr );
             statement.executeUpdate();
             return true;
         }

@@ -105,11 +105,11 @@ public class BankAccountImpl implements BankAccountDAO {
     }
 
     @Override
-    public boolean delete(Account account) {
+    public boolean delete(int accountNr) {
         try (Connection connection = getConnection()) {
             PreparedStatement statement = connection
                     .prepareStatement("DELETE FROM account WHERE account_number = ?");
-            statement.setInt(1, account.getNumber() );
+            statement.setInt(1, accountNr );
             statement.executeUpdate();
             return true;
         }

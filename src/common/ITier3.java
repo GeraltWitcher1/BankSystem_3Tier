@@ -16,12 +16,12 @@ public interface ITier3
 	Account getAccount(int accountNumber) throws RemoteException;
 	Account getAccount(String cpr) throws RemoteException;
 	boolean updateAccount(Account account) throws RemoteException;
-	boolean deleteAccount(Account account) throws RemoteException;
+	boolean deleteAccount(int accountNr) throws RemoteException;
 
 	boolean createUser(User user) throws RemoteException;
 	User getUser(String cpr) throws RemoteException;
 	boolean updateUser(User user) throws RemoteException;
-	boolean deleteUser(User user) throws RemoteException;
+	boolean deleteUser(String cpr) throws RemoteException;
 
 	boolean addTransaction(Transaction transaction) throws RemoteException;
 
